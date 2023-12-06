@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xd.pre.modules.sys.mapper.SysOrderHandleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xd.pre.modules.sys.domain.SysOrderHandle">
+        <id column="handle_id" property="handleId" />
+        <result column="order_id" property="orderId" />
+        <result column="dispatch_id" property="dispatchId" />
+        <result column="tool_one" property="toolOne" />
+        <result column="tool_two" property="toolTwo" />
+        <result column="tool_three" property="toolThree" />
+        <result column="tool_four" property="toolFour" />
+        <result column="tool_five" property="toolFive" />
+        <result column="tool_six" property="toolSix" />
+        <result column="linqu_time" property="linquTime" />
+        <result column="car_number" property="carNumber" />
+        <result column="manage" property="manage" />
+        <result column="watch_start_time" property="watchStartTime" />
+        <result column="watch_end_time" property="watchEndTime" />
+        <result column="work_condition" property="workCondition" />
+        <result column="work_environment" property="workEnvironment" />
+        <result column="danger_point" property="dangerPoint" />
+        <result column="safe_measures" property="safeMeasures" />
+        <result column="live_photo" property="livePhoto" />
+        <result column="watch_result" property="watchResult" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="feedback_time" property="feedbackTime" />
+        <result column="feedback_people_id" property="feedbackPeopleId" />
+        <result column="feedback_people_name" property="feedbackPeopleName" />
+        <result column="multi_photo" property="multiPhoto" />
+        <result column="arrive_time" property="arriveTime" />
+        <result column="live_condition" property="liveCondition" />
+        <result column="worker_photo" property="workerPhoto" />
+        <result column="finish_note" property="finishNote" />
+        <result column="work_after_photo" property="workAfterPhoto" />
+        <result column="worker_before_photo" property="workBeforePhoto" />
+        <result column="start_work_time" property="startWorkTime" />
+        <result column="finish_work_time" property="finishWorkTime" />
+
+
+
+    </resultMap>
+
+</mapper>

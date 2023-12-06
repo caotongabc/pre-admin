@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xd.pre.modules.sys.mapper.SysToolsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xd.pre.modules.sys.domain.SysTools">
+        <id column="id" property="id" />
+        <result column="tool_id" property="toolId" />
+        <result column="tool_name" property="toolName" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="big_type" property="bigType" />
+        <result column="medium_type" property="mediumType" />
+        <result column="samll_type" property="samllType" />
+        <result column="tool_photo" property="toolPhoto" />
+        <result column="tool_warehourse" property="toolWarehourse" />
+        <result column="tool_state" property="toolState" />
+        <result column="next_time" property="nextTime" />
+        <result column="this_time" property="thisTime" />
+        <result column="use_state" property="useState" />
+        <result column="tool_unit" property="toolUnit" />
+        <result column="tool_team" property="toolTeam" />
+        <result column="unitName" property="unitName" />
+        <result column="teamName" property="teamName" />
+        <result column="warehourseName" property="warehourseName" />
+    </resultMap>
+    <resultMap id="BaseResultMap1" type="com.xd.pre.modules.sys.domain.SysTools">
+        <id column="id" property="id" />
+        <result column="tool_id" property="toolId" />
+        <result column="tool_name" property="toolName" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="big_type" property="bigType" />
+        <result column="medium_type" property="mediumType" />
+        <result column="samll_type" property="samllType" />
+        <result column="tool_photo" property="toolPhoto" />
+        <result column="tool_warehourse" property="toolWarehourse" />
+        <result column="tool_state" property="toolState" />
+        <result column="next_time" property="nextTime" />
+        <result column="this_time" property="thisTime" />
+        <result column="use_state" property="useState" />
+        <result column="tool_unit" property="toolUnit" />
+        <result column="tool_team" property="toolTeam" />
+        <result column="unitName" property="unitName" />
+        <result column="teamName" property="teamName" />
+        <result column="warehourseName" property="warehourseName" />
+        <result column="warnNum" property="warnNum" />
+        <result column="expirationDate" property="expirationDate" />
+    </resultMap>
+    <select id="getToolInfo" resultMap="BaseResultMap">
+        SELECT
+        t.id,
+        t.tool_id,
+        t.tool_name,
+        t.is_delete,
+        t.big_type,
+        t.next_time,
+        t.this_time,
+        t.buy_time,
+        t.tool_photo,
+        t.tool_note,
+        t.tool_state,
+        t.use_state,
+        t.tool_unit,
+        t.tool_team,
+        t.create_time,
+        t.tool_warehourse,
+        t.big_type,
+        d.name AS unitName,
+        a.team_name AS teamName,
+        w.warehourse_name As warehourseName
+        FROM
+        sys_tools AS t
+        LEFT JOIN sys_dept AS d ON d.dept_id = t.tool_unit
+        LEFT JOIN sys_team AS a ON a.team_id = t.tool_team
+        LEFT JOIN sys_warehourse AS  w ON w.warehourse_id = t.tool_warehourse
+        <where>
+            t.is_delete=0
+            <if test="query.toolName != null and query.toolName != ''">
+                and t.tool_name LIKE CONCAT('%',#{query.toolName},'%')
+            </if>
+            <choose>
+                <when test="query.toolUnit != null and query.toolUnit != ''">
+                    and t.tool_unit=#{query.toolUnit}
+                </when>
+                <otherwise>
+                    and t.tool_unit in (SELECT dd.dept_id FROM sys_dept AS dd WHERE dd.dept_id =#{query.userUnit} OR dd.parent_id =#{query.userUnit})
+                </otherwise>
+            </choose>
+            <if test="query.toolId != null and query.toolId != 0">
+                and t.tool_id=#{query.toolId}
+            </if>
+            <if test="query.toolTeam != null and query.toolTeam != 0">
+                and t.tool_team=#{query.toolTeam}
+            </if>
+            <if test="query.toolWarehourse != null and query.toolWarehourse != 0">
+                and t.tool_warehourse=#{query.toolWarehourse}
+            </if>
+            <if test="query.bigType != null and query.bigType != ''">
+                and t.big_type=#{query.bigType}
+            </if>
+        </where>
+        ORDER BY  t.tool_id DESC
+    </select>
+    <select id="getSingleToolInfo" resultMap="BaseResultMap">
+        SELECT
+        t.id,
+        t.tool_id,
+        t.tool_name,
+        t.is_delete,
+        t.big_type,
+        t.next_time,
+        t.this_time,
+        t.buy_time,
+        t.tool_photo,
+        t.tool_note,
+        t.tool_state,
+        t.use_state,
+        t.tool_unit,
+        t.tool_team,
+        t.create_time,
+        t.tool_warehourse,
+        t.big_type,
+        d.name AS unitName,
+        a.team_name AS teamName,
+        w.warehourse_name As warehourseName
+        FROM
+        sys_tools AS t
+        LEFT JOIN sys_dept AS d ON d.dept_id = t.tool_unit
+        LEFT JOIN sys_team AS a ON a.team_id = t.tool_team
+        LEFT JOIN sys_warehourse AS  w ON w.warehourse_id = t.tool_warehourse
+        <where>
+            <if test="query.toolName != null and query.toolName != ''">
+                and t.tool_name LIKE CONCAT('%',#{query.toolName},'%')
+            </if>
+            <if test="query.toolUnit != null and query.toolUnit != 0">
+                and t.tool_unit=#{query.toolUnit}
+            </if>
+            <if test="query.toolId != null and query.toolId != 0">
+                and t.tool_id=#{query.toolId}
+            </if>
+            <if test="query.toolTeam != null and query.toolTeam != 0">
+                and t.tool_team=#{query.toolTeam}
+            </if>
+            <if test="query.toolWarehourse != null and query.toolWarehourse != 0">
+                and t.tool_warehourse=#{query.toolWarehourse}
+            </if>
+            <if test="query.bigType != null and query.bigType != ''">
+                and t.big_type=#{query.bigType}
+            </if>
+        </where>
+        ORDER BY  t.tool_id DESC
+    </select>
+    <select id="getToolWarnInfo" resultMap="BaseResultMap1">
+        SELECT
+        t.id,
+        t.tool_id,
+        t.tool_name,
+        t.is_delete,
+        t.big_type,
+        t.next_time,
+        t.this_time,
+        t.buy_time,
+        t.tool_photo,
+        t.tool_note,
+        t.tool_state,
+        t.use_state,
+        t.tool_unit,
+        t.tool_team,
+        t.create_time,
+        t.tool_warehourse,
+        t.big_type,
+        d.name AS unitName,
+        a.team_name AS teamName,
+        w.warehourse_name AS warehourseName,
+        s.expiration_date AS expirationDate,
+        s.warn_num AS warnNum
+        FROM
+        sys_tools AS t
+        LEFT JOIN sys_dept AS d ON d.dept_id = t.tool_unit
+        LEFT JOIN sys_team AS a ON a.team_id = t.tool_team
+        LEFT JOIN sys_warehourse AS  w ON w.warehourse_id = t.tool_warehourse
+        LEFT JOIN sys_warn_strategy AS  s ON s.unit_id = t.tool_unit
+        <where>
+            t.next_time  &lt;= DATE_ADD(SYSDATE(), INTERVAL s.warn_num DAY) AND s.type='工具' AND s.sub_type=t.big_type AND s.state=9
+            <if test="query.toolName != null and query.toolName != ''">
+                and t.tool_name LIKE CONCAT('%',#{query.toolName},'%')
+            </if>
+            <choose>
+                <when test="query.userUnit != null and query.userUnit != ''">
+                    and t.tool_unit=#{query.userUnit}
+                </when>
+                <otherwise>
+                    and t.tool_unit in (SELECT dd.dept_id FROM sys_dept AS dd WHERE dd.dept_id =#{query.userUnit} OR dd.parent_id =#{query.userUnit})
+                </otherwise>
+            </choose>
+            <if test="query.toolId != null and query.toolId != 0">
+                and t.tool_id=#{query.toolId}
+            </if>
+            <if test="query.toolTeam != null and query.toolTeam != 0">
+                and t.tool_team=#{query.toolTeam}
+            </if>
+            <if test="query.toolWarehourse != null and query.toolWarehourse != 0">
+                and t.tool_warehourse=#{query.toolWarehourse}
+            </if>
+            <if test="query.bigType != null and query.bigType != ''">
+                and t.big_type=#{query.bigType}
+            </if>
+        </where>
+        ORDER BY  t.tool_id DESC
+    </select>
+</mapper>

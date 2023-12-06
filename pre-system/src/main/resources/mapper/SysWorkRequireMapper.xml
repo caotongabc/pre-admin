@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xd.pre.modules.sys.mapper.SysWorkRequireMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xd.pre.modules.sys.domain.SysWorkRequire">
+        <id column="id" property="id" />
+        <result column="require_id" property="requireId" />
+        <result column="require_status" property="requireStatus" />
+        <result column="project_name" property="projectName" />
+        <result column="project_type" property="projectType" />
+        <result column="require_type" property="requireType" />
+        <result column="station_id" property="stationId" />
+        <result column="line_id" property="lineId" />
+        <result column="tg_id" property="tgId" />
+        <result column="work_address" property="workAddress" />
+        <result column="work_content" property="workContent" />
+        <result column="apply_unitName" property="applyUnitname" />
+        <result column="apply_unit" property="applyUnit" />
+        <result column="apply_people" property="applyPeople" />
+        <result column="apply_people_id" property="applyPeopleId" />
+        <result column="apply_peopletel" property="applyPeopletel" />
+        <result column="apply_time" property="applyTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="audit_result" property="auditResult" />
+        <result column="audit_people" property="auditPeople" />
+        <result column="audit_time" property="auditTime" />
+        <result column="audit_resaon" property="auditResaon" />
+        <result column="is_delete" property="isDelete" />
+        <result column="unitName" property="unitName" />
+        <result column="stationName" property="stationName" />
+        <result column="lineName" property="lineName" />
+        <result column="tgName" property="tgName" />
+        <result column="startapplytime" property="startapplytime" />
+        <result column="endapplytime" property="endapplytime" />
+    </resultMap>
+    <select id="getRequireInfo" resultMap="BaseResultMap">
+        SELECT
+        r.id,
+        r.require_id,
+        r.require_status,
+        r.project_name,
+        r.project_type,
+        r.require_type,
+        r.station_id,
+        s.station_name AS stationName,
+        r.line_id,
+        l.line_name AS lineName,
+        r.tg_id,
+        t.tg_name AS tgName,
+        r.work_address,
+        r.work_content,
+        r.apply_unit,
+        d.name AS unitName,
+        r.apply_unitName,
+        r.apply_people,
+        r.apply_people_id,
+        r.apply_peopletel,
+        r.apply_time,
+        r.audit_people,
+        r.audit_resaon,
+        r.audit_result,
+        r.audit_time,
+        r.is_delete
+        FROM sys_work_require AS r
+        LEFT JOIN sys_user AS u ON u.dept_id =r.apply_unit AND u.username =r.apply_people
+        LEFT JOIN sys_dept AS d ON d.dept_id= r.apply_unit
+        LEFT JOIN sys_station AS s ON s.station_id= r.station_id
+        LEFT JOIN sys_line AS l ON l.line_id= r.line_id
+        LEFT JOIN sys_tg AS t ON t.tg_id= r.tg_id
+        <where>
+             r.is_delete=0
+            <choose>
+                <when test="query.applyUnit != null and query.applyUnit != ''">
+                    and r.apply_unit =#{query.applyUnit}
+                </when>
+                <otherwise>
+                    and r.apply_unit in (SELECT dd.dept_id FROM sys_dept AS dd WHERE dd.dept_id =#{query.userUnit} OR dd.parent_id =#{query.userUnit})
+                </otherwise>
+            </choose>
+            <if test="query.requireId != null and query.requireId != ''">
+                and r.require_id LIKE CONCAT('%',#{query.requireId},'%')
+            </if>
+            <if test="query.projectName != null and query.projectName != ''">
+                and r.project_name LIKE CONCAT('%',#{query.projectName},'%')
+            </if>
+            <if test="query.requireStatus != null and query.requireStatus != ''">
+                and r.require_status =#{query.requireStatus}
+            </if>
+            <if test="query.projectType != null and query.projectType != ''">
+                and r.project_type=#{query.projectType}
+            </if>
+            <if test="query.requireType != null and query.requireType != ''">
+                and r.require_type =#{query.requireType}
+            </if>
+            <if test="query.stationId != null and query.stationId != ''">
+                and r.station_id=#{query.stationId}
+            </if>
+            <if test="query.lineId != null and query.lineId != ''">
+                and r.line_id =#{query.lineId}
+            </if>
+            <if test="query.tgId != null and query.tgId != ''">
+                and r.tg_id=#{query.tgId}
+            </if>
+            <if test="query.applyPeople != null and query.applyPeople != ''">
+                and r.apply_people =#{query.applyPeople}
+            </if>
+            <if test="query.startapplytime != null ">
+             AND r.apply_time &gt;= str_to_date(#{query.startapplytime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="query.endapplytime != null ">
+                AND r.apply_time &lt;=str_to_date(#{query.endapplytime},'%Y-%m-%d %H:%i:%s')
+            </if>
+
+        </where>
+        ORDER BY  r.create_time DESC
+    </select>
+    <select id="getSingleRequireInfo" resultMap="BaseResultMap">
+        SELECT
+        r.id,
+        r.require_id,
+        r.require_status,
+        r.project_name,
+        r.project_type,
+        r.require_type,
+        r.station_id,
+        s.station_name AS stationName,
+        r.line_id,
+        l.line_name AS lineName,
+        r.tg_id,
+        t.tg_name AS tgName,
+        r.work_address,
+        r.work_content,
+        r.apply_unit,
+        d.name AS unitName,
+        r.apply_unitName,
+        r.apply_people,
+        r.apply_people_id,
+        r.apply_peopletel,
+        r.apply_time,
+        r.audit_people,
+        r.audit_resaon,
+        r.audit_result,
+        r.audit_time,
+        r.is_delete
+        FROM sys_work_require AS r
+        LEFT JOIN sys_user AS u ON u.dept_id =r.apply_unit AND u.username =r.apply_people
+        LEFT JOIN sys_dept AS d ON d.dept_id= r.apply_unit
+        LEFT JOIN sys_station AS s ON s.station_id= r.station_id
+        LEFT JOIN sys_line AS l ON l.line_id= r.line_id
+        LEFT JOIN sys_tg AS t ON t.tg_id= r.tg_id
+        <where>
+            r.is_delete=0
+            <if test="query.applyUnit != null and query.applyUnit != ''">
+                and r.apply_unit =#{query.applyUnit}
+            </if>
+            <if test="query.requireId != null and query.requireId != ''">
+                and r.require_id LIKE CONCAT('%',#{query.requireId},'%')
+            </if>
+            <if test="query.projectName != null and query.projectName != ''">
+                and r.project_name LIKE CONCAT('%',#{query.projectName},'%')
+            </if>
+            <if test="query.requireStatus != null and query.requireStatus != ''">
+                and r.require_status =#{query.requireStatus}
+            </if>
+            <if test="query.projectType != null and query.projectType != ''">
+                and r.project_type=#{query.projectType}
+            </if>
+            <if test="query.requireType != null and query.requireType != ''">
+                and r.require_type =#{query.requireType}
+            </if>
+            <if test="query.stationId != null and query.stationId != ''">
+                and r.station_id=#{query.stationId}
+            </if>
+            <if test="query.lineId != null and query.lineId != ''">
+                and r.line_id =#{query.lineId}
+            </if>
+            <if test="query.tgId != null and query.tgId != ''">
+                and r.tg_id=#{query.tgId}
+            </if>
+            <if test="query.applyPeople != null and query.applyPeople != ''">
+                and r.apply_people =#{query.applyPeople}
+            </if>
+            <if test="query.startapplytime != null ">
+                AND r.apply_time &gt;= str_to_date(#{query.startapplytime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="query.endapplytime != null ">
+                AND r.apply_time &lt;=str_to_date(#{query.endapplytime},'%Y-%m-%d %H:%i:%s')
+            </if>
+
+        </where>
+        ORDER BY  r.create_time DESC
+    </select>
+    <select id="getWorkerRequireInfo" resultMap="BaseResultMap">
+        SELECT
+        r.id,
+        r.require_id,
+        r.require_status,
+        r.project_name,
+        r.project_type,
+        r.require_type,
+        r.station_id,
+        s.station_name AS stationName,
+        r.line_id,
+        l.line_name AS lineName,
+        r.tg_id,
+        t.tg_name AS tgName,
+        r.work_address,
+        r.work_content,
+        r.apply_unit,
+        d.name AS unitName,
+        r.apply_unitName,
+        r.apply_people,
+        r.apply_people_id,
+        r.apply_peopletel,
+        r.apply_time,
+        r.audit_people,
+        r.audit_resaon,
+        r.audit_result,
+        r.audit_time,
+        r.is_delete,
+        wd.dispatch_state,
+        wd.jiedan_unit,
+        wd.jiedan_team,
+        wd.manage,
+        wd.manage_phone
+        FROM sys_work_require AS r
+        LEFT JOIN sys_user AS u ON u.dept_id =r.apply_unit AND u.username =r.apply_people
+        LEFT JOIN sys_dept AS d ON d.dept_id= r.apply_unit
+        LEFT JOIN sys_station AS s ON s.station_id= r.station_id
+        LEFT JOIN sys_line AS l ON l.line_id= r.line_id
+        LEFT JOIN sys_tg AS t ON t.tg_id= r.tg_id
+        LEFT JOIN sys_work_dispatch AS wd ON wd.require_id= r.require_id
+        <where>
+            r.is_delete=0 and wd.is_recall=0
+            <if test="query.manage != null and query.manage != ''">
+                and wd.manage =#{query.manage}
+            </if>
+            <if test="query.requireId != null and query.requireId != ''">
+                and r.require_id LIKE CONCAT('%',#{query.requireId},'%')
+            </if>
+            <if test="query.projectName != null and query.projectName != ''">
+                and r.project_name LIKE CONCAT('%',#{query.projectName},'%')
+            </if>
+            <if test="query.requireStatus != null and query.requireStatus != ''">
+                and r.require_status =#{query.requireStatus}
+            </if>
+            <if test="query.projectType != null and query.projectType != ''">
+                and r.project_type=#{query.projectType}
+            </if>
+            <if test="query.requireType != null and query.requireType != ''">
+                and r.require_type =#{query.requireType}
+            </if>
+            <if test="query.stationId != null and query.stationId != ''">
+                and r.station_id=#{query.stationId}
+            </if>
+            <if test="query.lineId != null and query.lineId != ''">
+                and r.line_id =#{query.lineId}
+            </if>
+            <if test="query.tgId != null and query.tgId != ''">
+                and r.tg_id=#{query.tgId}
+            </if>
+            <if test="query.applyPeople != null and query.applyPeople != ''">
+                and r.apply_people =#{query.applyPeople}
+            </if>
+            <if test="query.applyUnit != null and query.applyUnit != ''">
+                and r.apply_unit =#{query.applyUnit}
+            </if>
+            <if test="query.startapplytime != null ">
+                AND r.apply_time &gt;= str_to_date(#{query.startapplytime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="query.endapplytime != null ">
+                AND r.apply_time &lt;=str_to_date(#{query.endapplytime},'%Y-%m-%d %H:%i:%s')
+            </if>
+
+        </where>
+        ORDER BY  r.create_time DESC
+    </select>
+</mapper>

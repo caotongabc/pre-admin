@@ -1,0 +1,170 @@
+package com.xd.pre.modules.sys.domain;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
+
+/**
+ * <p>
+ * 需求表
+ * </p>
+ *
+ * @author caotong
+ * @since 2022-03-19
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class SysWorkRequire implements Serializable {
+
+    private static final long serialVersionUID=1L;
+
+    /**
+     * id
+     */
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
+
+    /**
+     * 需求编号
+     */
+    private String requireId;
+
+    /**
+     * 需求状态
+     */
+    private Integer requireStatus;
+
+    /**
+     * 工程名称
+     */
+    private String projectName;
+
+    /**
+     * 工程类别
+     */
+    private String projectType;
+
+    /**
+     * 需求类型
+     */
+    private String requireType;
+
+    /**
+     * 变电站id
+     */
+    private Integer stationId;
+
+    /**
+     * 线路id
+     */
+    private Integer lineId;
+
+    /**
+     * 台区id
+     */
+    private String tgId;
+
+    /**
+     * 工作地点
+     */
+    private String workAddress;
+
+    /**
+     * 工作内容
+     */
+    private String workContent;
+
+    /**
+     * 申请单位名称
+     */
+    @TableField("apply_unitName")
+    private String applyUnitname;
+
+    /**
+     * 申请单位
+     */
+    private Integer applyUnit;
+
+    /**
+     * 申请人
+     */
+    private String applyPeople;
+    private Integer applyPeopleId;
+    /**
+     * 申请人电话
+     */
+    private String applyPeopletel;
+
+    /**
+     * 申请时间
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime applyTime;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createTime;
+
+    /**
+     * 更新时间
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
+
+    /**
+     * 审核结果
+     */
+    private String auditResult;
+
+    /**
+     * 审核人
+     */
+    private String auditPeople;
+
+    /**
+     * 审核时间
+     */
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime auditTime;
+
+    /**
+     * 审核理由
+     */
+    private String auditResaon;
+
+    /**
+     * 是否删除
+     */
+    private Integer isDelete;
+
+    @TableField(exist = false)
+    private String unitName;
+    @TableField(exist = false)
+    private String stationName;
+    @TableField(exist = false)
+    private Integer manage;
+    @TableField(exist = false)
+    private String lineName;
+    @TableField(exist = false)
+    private String tgName;
+    @TableField(exist = false)
+    private Integer userUnit;
+
+    @DateTimeFormat(pattern ="yyyy-MM-dd HH:mm:ss" )
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime startapplytime;
+    @DateTimeFormat(pattern ="yyyy-MM-dd HH:mm:ss" )
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime endapplytime;
+}

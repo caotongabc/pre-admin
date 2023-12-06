@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xd.pre.modules.sys.mapper.SysWarnInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xd.pre.modules.sys.domain.SysWarnInfo">
+        <id column="warn_id" property="warnId" />
+        <result column="equipment_id" property="equipmentId" />
+        <result column="type" property="type" />
+        <result column="sub_type" property="subType" />
+        <result column="warn_type" property="warnType" />
+        <result column="this_warn_time" property="thisWarnTime" />
+        <result column="next_warn_time" property="nextWarnTime" />
+        <result column="warn_state" property="warnState" />
+        <result column="warn_people" property="warnPeople" />
+        <result column="create_time" property="createTime" />
+        <result column="warn_unit" property="warnUnit" />
+        <result column="warn_result" property="warnResult" />
+        <result column="warn_note" property="warnNote" />
+        <result column="equipmentName" property="equipmentName" />
+        <result column="handle_id" property="handleId"/>
+    </resultMap>
+    <select id="getToolWarnDetailInfo" resultMap="BaseResultMap">
+        SELECT
+	      w.equipment_id,
+	      t.tool_name AS equipmentName,
+	      w.warn_people,
+	      w.warn_unit,
+          w.warn_result,
+          w.next_warn_time,
+          w.this_warn_time,
+          w.warn_note,
+          w.create_time
+	    FROM sys_warn_info AS w
+	    LEFT  JOIN sys_tools t ON t.tool_id =w.equipment_id
+	    <where>
+            <if test="query.equipmentId != null and query.equipmentId != ''">
+                and w.equipment_id=#{query.equipmentId}
+            </if>
+        </where>
+        ORDER BY w.create_time DESC
+    </select>
+    <select id="getCarlWarnInsuranceDetailInfo" resultMap="BaseResultMap">
+        SELECT
+        w.equipment_id,
+        c.car_number AS equipmentName,
+        w.warn_people,
+        w.type,
+        w.warn_type,
+        w.sub_type,
+        w.warn_unit,
+        w.warn_result,
+        w.next_warn_time,
+        w.this_warn_time,
+        w.warn_note,
+        w.create_time
+        FROM sys_warn_info AS w
+        LEFT  JOIN sys_car c ON c.car_number =w.equipment_id
+        <where>
+            w.type='车辆' AND w.warn_type='保险'
+            <if test="query.equipmentId != null and query.equipmentId !=''">
+                and w.equipment_id=#{query.equipmentId}
+            </if>
+        </where>
+        ORDER BY w.create_time DESC
+    </select>
+    <select id="getCarWarnTestDetailInfo" resultMap="BaseResultMap">
+        SELECT
+        w.equipment_id,
+        c.car_number AS equipmentName,
+        w.warn_people,
+        w.warn_unit,
+        w.type,
+        w.warn_type,
+        w.sub_type,
+        w.warn_result,
+        w.next_warn_time,
+        w.this_warn_time,
+        w.warn_note,
+        w.create_time
+        FROM sys_warn_info AS w
+        LEFT  JOIN sys_car c ON c.car_number =w.equipment_id
+        <where>
+               w.type='车辆' AND w.warn_type='试验'
+            <if test="query.equipmentId != null and query.equipmentId != ''">
+                and w.equipment_id=#{query.equipmentId}
+            </if>
+        </where>
+        ORDER BY w.create_time DESC
+    </select>
+</mapper>

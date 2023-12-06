@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xd.pre.modules.sys.mapper.SysRequireHandleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xd.pre.modules.sys.domain.SysRequireHandle">
+        <id column="handle_id" property="handleId" />
+        <result column="require_id" property="requireId" />
+        <result column="dispatch_id" property="dispatchId" />
+        <result column="watch_start_time" property="watchStartTime" />
+        <result column="watch_end_time" property="watchEndTime" />
+        <result column="work_condition" property="workCondition" />
+        <result column="work_environment" property="workEnvironment" />
+        <result column="danger_point" property="dangerPoint" />
+        <result column="safe_measures" property="safeMeasures" />
+        <result column="live_photo" property="livePhoto" />
+        <result column="multi_photo" property="multiPhoto" />
+        <result column="watch_result" property="watchResult" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="feedback_time" property="feedbackTime" />
+        <result column="feedback_people_id" property="feedbackPeopleId" />
+        <result column="feedback_people_name" property="feedbackPeopleName" />
+    </resultMap>
+
+</mapper>

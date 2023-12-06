@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xd.pre.modules.sys.mapper.SysWarnStrategyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xd.pre.modules.sys.domain.SysWarnStrategy">
+        <id column="id" property="id" />
+        <result column="unit_id" property="unitId" />
+        <result column="type" property="type" />
+        <result column="sub_type" property="subType" />
+        <result column="warn_type" property="warnType" />
+        <result column="expiration_date" property="expirationDate" />
+        <result column="warn_num" property="warnNum" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="state" property="state" />
+        <result column="unitName" property="unitName" />
+    </resultMap>
+    <select id="getWarnStrategyInfo1" resultMap="BaseResultMap">
+        SELECT
+        w.id,
+        w.unit_id,
+        w.type,
+        w.sub_type,
+        w.warn_type,
+        w.expiration_date,
+        w.warn_num,
+        w.state,
+        w.create_time,
+        w.update_time,
+        d.name AS unitName
+        FROM sys_warn_strategy AS w
+        LEFT JOIN sys_dept AS d ON d.dept_id = w.unit_id
+        <where>
+            <if test="query.unitId != null and query.unitId != 0">
+                and w.unit_id=#{query.unitId}
+            </if>
+            <if test="query.type != null and query.type != ''">
+                and w.type=#{query.type}
+            </if>
+            <if test="query.subType != null and query.subType != ''">
+                and w.sub_type =#{query.subType}
+            </if>
+            <if test="query.warnType != null and query.warnType != ''">
+                and w.warn_type =#{query.warnType}
+            </if>
+            <if test="query.state != null and query.state != 0">
+                and w.state =#{query.state}
+            </if>
+        </where>
+        ORDER BY  w.create_time DESC
+    </select>
+</mapper>

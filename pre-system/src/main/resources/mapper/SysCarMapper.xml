@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xd.pre.modules.sys.mapper.SysCarMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xd.pre.modules.sys.domain.SysCar">
+        <id column="id" property="id" />
+        <result column="car_number" property="carNumber" />
+        <result column="unit_id" property="unitId" />
+        <result column="team_id" property="teamId" />
+        <result column="warehourse_id" property="warehourseId" />
+        <result column="car_type" property="carType" />
+        <result column="this_test_time" property="thisTestTime" />
+        <result column="next_test_time" property="nextTestTime" />
+        <result column="this_insurance_time" property="thisInsuranceTime" />
+        <result column="next_insurance_time" property="nextInsuranceTime" />
+        <result column="car_note" property="carNote" />
+        <result column="buy_time" property="buyTime" />
+        <result column="car_state" property="carState" />
+        <result column="test_state" property="testState" />
+        <result column="insurance_state" property="insuranceState" />
+        <result column="car_use_state" property="carUseState" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="car_length" property="carLength" />
+        <result column="car_width" property="carWidth" />
+        <result column="car_height" property="carHeight" />
+        <result column="car_weight" property="carWeight" />
+        <result column="car_zaizhong" property="carZaizhong" />
+        <result column="unitName" property="unitName" />
+        <result column="teamName" property="teamName" />
+        <result column="warehourseName" property="warehourseName" />
+    </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap1" type="com.xd.pre.modules.sys.domain.SysCar">
+        <id column="id" property="id" />
+        <result column="car_number" property="carNumber" />
+        <result column="unit_id" property="unitId" />
+        <result column="team_id" property="teamId" />
+        <result column="warehourse_id" property="warehourseId" />
+        <result column="car_type" property="carType" />
+        <result column="this_test_time" property="thisTestTime" />
+        <result column="next_test_time" property="nextTestTime" />
+        <result column="this_insurance_time" property="thisInsuranceTime" />
+        <result column="next_insurance_time" property="nextInsuranceTime" />
+        <result column="car_note" property="carNote" />
+        <result column="buy_time" property="buyTime" />
+        <result column="car_state" property="carState" />
+        <result column="test_state" property="testState" />
+        <result column="insurance_state" property="insuranceState" />
+        <result column="car_use_state" property="carUseState" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_delete" property="isDelete" />
+        <result column="car_length" property="carLength" />
+        <result column="car_width" property="carWidth" />
+        <result column="car_height" property="carHeight" />
+        <result column="car_weight" property="carWeight" />
+        <result column="car_zaizhong" property="carZaizhong" />
+        <result column="unitName" property="unitName" />
+        <result column="teamName" property="teamName" />
+        <result column="warehourseName" property="warehourseName" />
+    </resultMap>
+    <select id="getCarInfo" resultMap="BaseResultMap">
+       SELECT
+        t.id,
+        t.car_number,
+        t.unit_id,
+        t.team_id,
+        t.warehourse_id,
+        t.buy_time,
+        t.car_height,
+        t.car_length,
+        t.car_note,
+        t.car_state,
+        t.car_type,
+        t.test_state,
+        t.insurance_state,
+        t.car_use_state,
+        t.car_weight,
+        t.car_width,
+        t.car_zaizhong,
+        t.create_time,
+        t.next_insurance_time,
+        t.next_test_time,
+        t.this_insurance_time,
+        t.this_test_time,
+        t.update_time,
+        t.is_delete,
+        d.name AS unitName,
+        a.team_name AS teamName,
+        w.warehourse_name AS warehourseName
+        FROM
+        sys_car AS t
+        LEFT JOIN sys_dept AS d ON d.dept_id = t.unit_id
+        LEFT JOIN sys_team AS a ON a.team_id = t.team_id
+        LEFT JOIN sys_warehourse AS  w ON w.warehourse_id = t.warehourse_id
+        <where>
+            t.is_delete=0
+            <if test="query.carNumber != null and query.carNumber != ''">
+                and t.car_number LIKE CONCAT('%',#{query.carNumber},'%')
+            </if>
+            <choose>
+                <when test="query.unitId != null and query.unitId != ''">
+                    and t.unit_id=#{query.unitId}
+                </when>
+                <otherwise>
+                    and t.unit_id in (SELECT dd.dept_id FROM sys_dept AS dd WHERE dd.dept_id =#{query.userUnit} OR dd.parent_id =#{query.userUnit})
+                </otherwise>
+            </choose>
+            <if test="query.teamId != null and query.teamId != 0">
+                and t.team_id=#{query.teamId}
+            </if>
+            <if test="query.warehourseId != null and query.warehourseId != 0">
+                and t.warehourse_id=#{query.warehourseId}
+            </if>
+            <if test="query.carType != null and query.carType != ''">
+                and t.car_type=#{query.carType}
+            </if>
+        </where>
+        ORDER BY  t.create_time DESC
+    </select>
+    <select id="getCarDetailInfo" resultMap="BaseResultMap">
+        SELECT
+        t.id,
+        t.car_number,
+        t.unit_id,
+        t.team_id,
+        t.warehourse_id,
+        t.buy_time,
+        t.car_height,
+        t.car_length,
+        t.car_note,
+        t.car_state,
+        t.car_type,
+        t.test_state,
+        t.insurance_state,
+        t.car_use_state,
+        t.car_weight,
+        t.car_width,
+        t.car_zaizhong,
+        t.create_time,
+        t.next_insurance_time,
+        t.next_test_time,
+        t.this_insurance_time,
+        t.this_test_time,
+        t.update_time,
+        d.name AS unitName,
+        a.team_name AS teamName,
+        w.warehourse_name AS warehourseName
+        FROM
+        sys_car AS t
+        LEFT JOIN sys_dept AS d ON d.dept_id = t.unit_id
+        LEFT JOIN sys_team AS a ON a.team_id = t.team_id
+        LEFT JOIN sys_warehourse AS  w ON w.warehourse_id = t.warehourse_id
+        <where>
+            <if test="query.carNumber != null and query.carNumber != ''">
+                and t.car_number LIKE CONCAT('%',#{query.carNumber},'%')
+            </if>
+            <if test="query.teamId != null and query.teamId != 0">
+                and t.team_id=#{query.teamId}
+            </if>
+            <if test="query.warehourseId != null and query.warehourseId != 0">
+                and t.warehourse_id=#{query.warehourseId}
+            </if>
+            <if test="query.carType != null and query.carType != ''">
+                and t.car_type=#{query.carType}
+            </if>
+        </where>
+        ORDER BY  t.create_time DESC
+    </select>
+    <select id="getCarWarnTestInfo" resultMap="BaseResultMap1">
+        SELECT
+        t.id,
+        t.car_number,
+        t.unit_id,
+        t.team_id,
+        t.warehourse_id,
+        t.buy_time,
+        t.car_height,
+        t.car_length,
+        t.car_note,
+        t.car_state,
+        t.test_state,
+        t.insurance_state,
+        t.car_type,
+        t.car_use_state,
+        t.car_weight,
+        t.car_width,
+        t.car_zaizhong,
+        t.create_time,
+        t.next_insurance_time,
+        t.next_test_time,
+        t.this_insurance_time,
+        t.this_test_time,
+        t.update_time,
+        d.name AS unitName,
+        a.team_name AS teamName,
+        w.warehourse_name AS warehourseName,
+        s.expiration_date AS expirationDate,
+        s.warn_num AS warnNum
+        FROM
+        sys_car AS t
+        LEFT JOIN sys_dept AS d ON d.dept_id = t.unit_id
+        LEFT JOIN sys_team AS a ON a.team_id = t.team_id
+        LEFT JOIN sys_warehourse AS  w ON w.warehourse_id = t.warehourse_id
+        LEFT JOIN sys_warn_strategy AS  s ON s.unit_id = t.unit_id
+        <where>
+            t.next_test_time  &lt;= DATE_ADD(SYSDATE(), INTERVAL s.warn_num DAY) AND s.type='车辆' AND s.sub_type=t.car_type AND s.state=9 AND s.warn_type='试验'
+            <if test="query.carNumber != null and query.carNumber != ''">
+                and t.car_number LIKE CONCAT('%',#{query.carNumber},'%')
+            </if>
+            <choose>
+                <when test="query.userUnit != null and query.userUnit != ''">
+                    and t.unit_id=#{query.userUnit}
+                </when>
+                <otherwise>
+                    and t.unit_id in (SELECT dd.dept_id FROM sys_dept AS dd WHERE dd.dept_id =#{query.userUnit} OR dd.parent_id =#{query.userUnit})
+                </otherwise>
+            </choose>
+            <if test="query.teamId != null and query.teamId != 0">
+                and t.team_id=#{query.teamId}
+            </if>
+            <if test="query.warehourseId != null and query.warehourseId != 0">
+                and t.warehourse_id=#{query.warehourseId}
+            </if>
+            <if test="query.carType != null and query.carType != ''">
+                and t.car_type=#{query.carType}
+            </if>
+        </where>
+        ORDER BY  t.create_time DESC
+    </select>
+    <select id="getCarWarnInsuranceInfo" resultMap="BaseResultMap1">
+        SELECT
+        t.id,
+        t.car_number,
+        t.unit_id,
+        t.team_id,
+        t.warehourse_id,
+        t.buy_time,
+        t.car_height,
+        t.car_length,
+        t.car_note,
+        t.car_state,
+        t.test_state,
+        t.insurance_state,
+        t.car_type,
+        t.car_use_state,
+        t.car_weight,
+        t.car_width,
+        t.car_zaizhong,
+        t.create_time,
+        t.next_insurance_time,
+        t.next_test_time,
+        t.this_insurance_time,
+        t.this_test_time,
+        t.update_time,
+        d.name AS unitName,
+        a.team_name AS teamName,
+        w.warehourse_name AS warehourseName,
+        s.expiration_date AS expirationDate,
+        s.warn_num AS warnNum
+        FROM
+        sys_car AS t
+        LEFT JOIN sys_dept AS d ON d.dept_id = t.unit_id
+        LEFT JOIN sys_team AS a ON a.team_id = t.team_id
+        LEFT JOIN sys_warehourse AS  w ON w.warehourse_id = t.warehourse_id
+        LEFT JOIN sys_warn_strategy AS  s ON s.unit_id = t.unit_id
+        <where>
+            t.next_insurance_time  &lt;= DATE_ADD(SYSDATE(), INTERVAL s.warn_num DAY) AND s.type='车辆' AND s.sub_type=t.car_type AND s.state=9 AND s.warn_type='保险'
+            <if test="query.carNumber != null and query.carNumber != ''">
+                and t.car_number LIKE CONCAT('%',#{query.carNumber},'%')
+            </if>
+            <choose>
+                <when test="query.userUnit != null and query.userUnit != ''">
+                    and t.unit_id=#{query.userUnit}
+                </when>
+                <otherwise>
+                    and t.unit_id in (SELECT dd.dept_id FROM sys_dept AS dd WHERE dd.dept_id =#{query.userUnit} OR dd.parent_id =#{query.userUnit})
+                </otherwise>
+            </choose>
+            <if test="query.teamId != null and query.teamId != 0">
+                and t.team_id=#{query.teamId}
+            </if>
+            <if test="query.warehourseId != null and query.warehourseId != 0">
+                and t.warehourse_id=#{query.warehourseId}
+            </if>
+            <if test="query.carType != null and query.carType != ''">
+                and t.car_type=#{query.carType}
+            </if>
+        </where>
+        ORDER BY  t.create_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xd.pre.modules.sys.mapper.SysWarehourseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xd.pre.modules.sys.domain.SysWarehourse">
+        <id column="warehourse_id" property="warehourseId" />
+        <result column="warehourse_name" property="warehourseName" />
+        <result column="unit_id" property="unitId" />
+        <result column="team_id" property="teamId" />
+        <result column="warehourse_address" property="warehourseAddress" />
+        <result column="warehourse_state" property="warehourseState" />
+        <result column="baoguan_people" property="baoguanPeople" />
+        <result column="people_tel" property="peopleTel" />
+        <result column="warehourse_note" property="warehourseNote" />
+        <result column="warehourse_photo" property="warehoursePhoto" />
+        <result column="id_delete" property="idDelete" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="unitName" property="unitName" />
+        <result column="teamName" property="teamName" />
+        <result column="peopleName" property="peopleName" />
+        <result column="countTool" property="countTool" />
+        <result column="countCar" property="countCar" />
+    </resultMap>
+    <select id="getWareFullInfo" resultMap="BaseResultMap">
+    SELECT
+    w.warehourse_address,
+    w.baoguan_people,
+    w.create_time,
+    w.id_delete,
+    w.people_tel,
+    w.team_id,
+    w.unit_id,
+    w.warehourse_id,
+    w.warehourse_name,
+    w.warehourse_note,
+    w.warehourse_state,
+    a.team_name AS teamName,
+    d.name AS unitName,
+    u.username AS peopleName,
+    COALESCE(COUNTS,0)  AS countTool,
+    COALESCE(COUNTCar,0)  AS countCar
+    FROM sys_warehourse  AS w
+    LEFT JOIN (SELECT tool_warehourse, COUNT(tool_id)  AS COUNTS  FROM sys_tools GROUP BY sys_tools.tool_warehourse)  AS T
+    ON T.tool_warehourse=w.warehourse_id
+    LEFT JOIN (SELECT warehourse_id, COUNT(car_number)  AS COUNTCar FROM sys_car GROUP BY sys_car.warehourse_id)  AS C
+    ON C.warehourse_id=w.warehourse_id
+    LEFT JOIN sys_dept AS d ON d.dept_id = w.unit_id
+    LEFT JOIN sys_team  AS a ON a.team_id = w.team_id
+    LEFT JOIN sys_user  AS u ON u.user_id = w.baoguan_people
+    <where>
+        w.id_delete=0
+        <if test="query.warehourseName != null and query.warehourseName != ''">
+            and w.warehourse_name LIKE CONCAT('%',#{query.warehourseName},'%')
+        </if>
+        <choose>
+            <when test="query.unitId != null and query.unitId != ''">
+                and w.unit_id=#{query.unitId}
+            </when>
+            <otherwise>
+                and w.unit_id in (SELECT dd.dept_id FROM sys_dept AS dd WHERE dd.dept_id =#{query.userUnit} OR dd.parent_id =#{query.userUnit})
+            </otherwise>
+        </choose>
+        <if test="query.teamId != null and query.teamId != 0">
+            and w.team_id=#{query.teamId}
+        </if>
+        <if test="query.warehourseAddress != null and query.warehourseAddress != ''">
+            and w.warehourse_address LIKE CONCAT('%',#{query.warehourseAddress},'%')
+        </if>
+    </where>
+    ORDER BY  w.create_time DESC
+</select>
+    <select id="getSingleWareInfo" resultMap="BaseResultMap">
+        SELECT
+        w.warehourse_address,
+        w.baoguan_people,
+        w.create_time,
+        w.id_delete,
+        w.people_tel,
+        w.team_id,
+        w.unit_id,
+        w.warehourse_id,
+        w.warehourse_name,
+        w.warehourse_note,
+        w.warehourse_state,
+        a.team_name AS teamName,
+        d.name AS unitName,
+        u.username AS peopleName
+        FROM sys_warehourse  AS w
+        LEFT JOIN sys_dept AS d ON d.dept_id = w.unit_id
+        LEFT JOIN sys_team  AS a ON a.team_id = w.team_id
+        LEFT JOIN sys_user  AS u ON u.user_id = w.baoguan_people
+        <where>
+            w.id_delete=0
+            <if test="query.warehourseId != null and query.warehourseId != ''">
+                and w.warehourse_id =#{query.warehourseId}
+            </if>
+            <if test="query.warehourseName != null and query.warehourseName != ''">
+                and w.warehourse_name LIKE CONCAT('%',#{query.warehourseName},'%')
+            </if>
+            <if test="query.unitId != null and query.unitId != 0">
+                a   and w.unit_id=#{query.unitId}
+            </if>
+
+            <if test="query.teamId != null and query.teamId != 0">
+                and w.team_id=#{query.teamId}
+            </if>
+            <if test="query.warehourseAddress != null and query.warehourseAddress != ''">
+                and w.warehourse_address LIKE CONCAT('%',#{query.warehourseAddress},'%')
+            </if>
+        </where>
+        ORDER BY  w.create_time DESC
+    </select>
+
+</mapper>
